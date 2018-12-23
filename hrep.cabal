@@ -1,0 +1,69 @@
+cabal-version: 2.2
+name:          hrep
+version:       0
+synopsis:      Search Haskell files
+category:      Development
+description:
+  /Lexically/ search Haskell files.
+  .
+  Even the file is formatted as 
+  .
+  @
+  computeComponentId
+      :: Bool -- deterministic mode
+      -> Flag String
+  @
+  . 
+  the search for @computeComponentId ::@ will find it:
+  .
+  @
+  ./Cabal/Distribution/Backpack/Id.hs:33:computeComponentId
+  ./Cabal/Distribution/Backpack/Id.hs:34:    :: Bool -- deterministic mod
+  @
+  .
+  In other words, @hrep@ tries to match a sequence of tokens
+  .
+  It's not super fast, not super smart, but might be better than @grep@ sometimes.
+  .
+  @
+  % time hrep 'tcMonoExpr, _ ::' compiler
+  compiler/typecheck/TcExpr.hs:123:tcMonoExpr, tcMonoExprNC
+  compiler/typecheck/TcExpr.hs:124:    :: LHsExpr GhcRn     -- Expression to type check
+  hrep 'tcMonoExpr, _ ::' compiler  2,53s user 0,18s system 99% cpu 2,714 total
+  @
+  .
+  Kind of related project: https://github.com/phadej/jsstana#jsgrep
+
+license:       GPL-3.0-or-later
+license-file:  LICENSE
+author:        Oleg Grenrus <oleg.grenrus@iki.fi>
+maintainer:    Oleg Grenrus <oleg.grenrus@iki.fi>
+tested-with:   ghc ==8.4.4 || ==8.6.3
+
+source-repository head
+  type:     git
+  location: https://github.com/phadej/hrep.git
+
+executable hrep
+  default-language: Haskell2010
+  hs-source-dirs:   cli
+  main-is:          Hrep.hs
+  build-depends:
+    , base                  ^>=4.11.1.0 || ^>=4.12.0.0
+    , bytestring            ^>=0.10.8.2
+    , containers            ^>=0.5.11.0 || ^>=0.6.0.1
+    , directory             ^>=1.3.1.5
+    , filepath              ^>=1.4.2
+    , haskell-lexer         ^>=1.0.2
+    , machines              ^>=0.6.4
+    , mtl                   ^>=2.2.2
+    , optparse-applicative  ^>=0.14.3.0
+    , semigroupoids         ^>=5.3.1
+    , utf8-string           ^>=1.0.1.1
+
+  other-extensions:
+    DeriveFunctor
+    ExistentialQuantification
+    FlexibleContexts
+    OverloadedStrings
+    RankNTypes
